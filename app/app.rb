@@ -1,80 +1,36 @@
 require 'sinatra'
 require 'plivo'
-include Plivo
+require 'better_errors'
 
-base_url = ''
-AUTH_ID = ""
-AUTH_TOKEN = ""
 
-get '/' do
-    'Welcome to plivo'
+base_url = 'http://localhost/'
+AUTH_ID = "IDMANWZIZJAXNJRHZJAZYJ"
+AUTH_TOKEN = "MzMxNjZmYWFmOWQ3MThhZDg4ZjZmMTU5NzA1YmY5"
+
+class HelloWorldApp < Sinatra::Base
+get '/dial' do
+  to_number = params[:To]
+  from_number = params[:CLID] ? params[:CLID] : params[:From] ? params[:From] : ''
+  caller_name = params[:CallerName] ? params[:CallerName] : ''
+
+  resp = Response.new()
+  if not to_number
+    resp.addHangup()
+  else
+    if to_number[0, 4] == "sip:"
+      d = resp.addDial({'callerName' => caller_name})
+      d.addUser(to_number)
+    else
+      d = resp.addDial({'callerId' => from_number})
+      d.addNumber(to_number)
+    end
+  end
+  content_type :xml 
+  "text/xml"
+
+
+d = resp.addGetDigits({'action' => "http://whatever.com", 'method' => 'POST', 'numDigits' => '1')
+d.addSpeak("herllo dude")
+resp.to_xml()
 end
-
-
-post '/call/' do
-    to_number = params[:to]
-    from_number = params[:from]
-    answer_url = params[:answer_url]
-
-    p = RestAPI.new(AUTH_ID, AUTH_TOKEN)
-
-    call_params = {'to' => to_number,
-                    'from' => from_number,
-                    'answer_url' => answer_url,
-                    'answer_method' => 'GET'
-    }
-
-    response = p.make_call(call_params)
-
-    'Call has been fired'
-end
-
-get '/dialxml/' do
-    dial_callerId = ''
-    dial_number = ''
-    r = Response.new()
-
-    d = r.addDial({'callerId' => dial_callerId})
-    d.addNumber(dial_number)
-
-    content_type 'text/xml'
-    r.to_xml()
-end
-
-
-get '/playxml/' do
-    play_url = ''
-    play_loop = ''
-
-    r = Response.new()
-
-    r.addPlay(play_url, {'loop' => play_loop})
-
-    content_type 'text/xml'
-    r.to_xml()
-end
-
-get '/speakxml/' do
-    r = Response.new()
-
-    r.addWait({'length' => 2 })
-    r.addSpeak('Hi')
-
-    content_type 'text/xml'
-    r.to_xml()
-end
-
-
-get '/recordxml/' do
-    record_url = ''
-
-    r = Response.new()
-
-    r.addSpeak('Leave a message after the beep')
-    r.addRecord({'action' => record_url,
-                'maxLength' => 30,
-                'playBeep' => true})
-
-    content_type 'text/xml'
-    r.to_xml()
 end

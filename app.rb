@@ -2,12 +2,14 @@ require 'sinatra'
 require 'plivo'
 require 'better_errors'
 
-
-base_url = 'http://localhost/'
 AUTH_ID = "IDMANWZIZJAXNJRHZJAZYJ"
 AUTH_TOKEN = "MzMxNjZmYWFmOWQ3MThhZDg4ZjZmMTU5NzA1YmY5"
 
-class HelloWorldApp < Sinatra::Base
+class Phony < Sinatra::Base
+get '/' do
+ "Hey yggall"
+end
+
 get '/dial' do
   to_number = params[:To]
   from_number = params[:CLID] ? params[:CLID] : params[:From] ? params[:From] : ''
@@ -32,5 +34,10 @@ get '/dial' do
 d = resp.addGetDigits({'action' => "http://whatever.com", 'method' => 'POST', 'numDigits' => '1'})
 d.addSpeak("herllo dude")
 resp.to_xml()
+end
+
+not_found do
+  "Cant find this bro"
+
 end
 end

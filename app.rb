@@ -29,7 +29,7 @@ get '/dial' do
   "text/xml"
 
 
-d = resp.addGetDigits({'action' => "http://whatever.com", 'method' => 'POST', 'numDigits' => '1')
+d = resp.addGetDigits({'action' => "http://whatever.com", 'method' => 'POST', 'numDigits' => '1'})
 d.addSpeak("herllo dude")
 resp.to_xml()
 end

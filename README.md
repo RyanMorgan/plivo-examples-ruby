@@ -1,2 +1,2 @@
-Plivo Ruby Examples
-===================
+Heroku deployable sinatra app
+-----------------------------

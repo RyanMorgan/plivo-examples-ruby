@@ -1,2 +1,0 @@
-Heroku deployable sinatra app
------------------------------

@@ -6,6 +6,11 @@ AUTH_ID = "IDMANWZIZJAXNJRHZJAZYJ"
 AUTH_TOKEN = "MzMxNjZmYWFmOWQ3MThhZDg4ZjZmMTU5NzA1YmY5"
 
 class Phony < Sinatra::Base
+
+  configure do
+  set :show_exceptions, false
+end
+
 get '/' do
  "Hey yggall"
 end
@@ -37,7 +42,11 @@ resp.to_xml()
 end
 
 not_found do
-  "Cant find this bro"
-
+  request.path
 end
+
+error do
+  "Error is: " + params['captures'].first.inspect
+end
+
 end
